@@ -118,8 +118,13 @@ class Config extends ConfigBase implements ConfigInterface {
 		//if we're getting an existing model, we'll want to first get the edit fields without the relationships loaded
 		$originalModel = $model = $this->getDataModel();
 
+		$query = $model->query();
+		$filter = $this->getOption('query_filter');
+		if (is_callable($filter)) {
+			call_user_func($filter, $query);
+		}
 		//get the model by id
-		$model = $model->find($id);
+		$model = $query->find($id);
 		$model = $model ? $model : $originalModel;
 
 		//if the model exists, load up the existing related items
@@ -274,7 +279,7 @@ class Config extends ConfigBase implements ConfigInterface {
 	public function updateModel($model, FieldFactory $fieldFactory, ActionFactory $actionFactory)
 	{
 		//set the data model to the active model
-		$this->setDataModel($model->find($model->getKey()));
+		$this->setDataModel($model->fresh());
 
 		//include the item link if one was supplied
 		if ($link = $this->getModelLink())
@@ -564,9 +569,13 @@ class Config extends ConfigBase implements ConfigInterface {
 	{
 		$model = $this->getDataModel();
 
-		if ($id)
-		{
-			$model = $model->find($id);
+		if ($id) {
+			$query = $model->query();
+			$filter = $this->getOption('query_filter');
+			if (is_callable($filter)) {
+				call_user_func($filter, $query);
+			}
+			$model = $query->find($id);
 		}
 
 		$this->fillModel($model, $input, $fields);

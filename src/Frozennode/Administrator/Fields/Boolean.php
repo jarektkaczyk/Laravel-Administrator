@@ -2,6 +2,7 @@
 namespace Frozennode\Administrator\Fields;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class Boolean extends Field {
 
@@ -64,13 +65,17 @@ class Boolean extends Field {
 	/**
 	 * Filters a query object
 	 *
-	 * @param \Illuminate\Database\Query\Builder	$query
+	 * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder	$query
 	 * @param array									$selects
 	 *
 	 * @return void
 	 */
-	public function filterQuery(QueryBuilder &$query, &$selects = null)
+	public function filterQuery(&$query, &$selects = null)
 	{
+		if (!$query instanceof EloquentBuilder && !$query instanceof QueryBuilder) {
+			throw new \InvalidArgumentException('Filter accepts Query\Builder or Eloquent\Builder class');
+		}
+
 		//if the field isn't empty
 		if ($this->getOption('value') !== '')
 		{

@@ -84,18 +84,19 @@ class DataTableTest extends \PHPUnit_Framework_TestCase {
 				->shouldReceive('getOption')->times(2);
 		$columns = array($column);
 		$this->columnFactory->shouldReceive('getColumns')->once()->andReturn($columns);
-		$countQuery = m::mock('Illuminate\Database\Query\Builder');
-		$connection = m::mock('Illuminate\Database\Connection');
-		$connection->shouldReceive('table')->once()->andReturn(m::mock(array('groupBy' => $countQuery)));
 		$dbQuery = m::mock('Illuminate\Database\Query\Builder');
-		$dbQuery->shouldReceive('select')->twice()
-				->shouldReceive('getConnection')->once()->andReturn($connection);
+		$dbQuery->shouldReceive('select')->once();
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');
-		$query->shouldReceive('getQuery')->twice()->andReturn($dbQuery)
+		$query->shouldReceive('setQuery')->passthru();
+		$query->setQuery($dbQuery);
+		$query->shouldReceive('getQuery')->once()->andReturn($dbQuery)
 				->shouldReceive('toSql')->once()->andReturn('sql string')
 				->shouldReceive('orderBy')->once()
+				->shouldReceive('groupBy')->once()
+				->shouldReceive('select')->once()
 				->shouldReceive('getBindings')->once()->andReturn(array())
 				->shouldReceive('distinct')->once();
+		$countQuery = clone $query;
 		$model = m::mock('Illuminate\Database\Eloquent\Model');
 		$model->shouldReceive('getTable')->once()->andReturn('table')
 				->shouldReceive('getKeyName')->once()->andReturn('id')

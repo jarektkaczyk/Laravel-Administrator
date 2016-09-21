@@ -6,6 +6,8 @@ use Frozennode\Administrator\Config\ConfigInterface;
 use Frozennode\Administrator\Fields\Factory as FieldFactory;
 use Frozennode\Administrator\Fields\Field as Field;
 use Frozennode\Administrator\Actions\Factory as ActionFactory;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 /**
  * The Model Config class helps retrieve a model's configuration and provides a reliable pointer for these items
@@ -533,18 +535,22 @@ class Config extends ConfigBase implements ConfigInterface {
 	/**
 	 * Runs a user-supplied query filter if one is supplied
 	 *
-	 * @param \Illuminate\Database\Query\Builder	$query
+	 * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder	$query
 	 *
 	 * @return void
 	 */
-	public function runQueryFilter(\Illuminate\Database\Query\Builder &$query)
+	public function runQueryFilter(&$query)
 	{
+		if (!$query instanceof EloquentBuilder && !$query instanceof QueryBuilder) {
+			throw new \InvalidArgumentException('You must provide Query\Builder or Eloquent\Builder object');
+		}
+
 		if ($filter = $this->getOption('query_filter'))
 		{
 			$filter($query);
 		}
 	}
-	
+
 	/**
 	 * Fetches the data model for a config given a post input array
 	 *

@@ -2,9 +2,10 @@
 namespace Frozennode\Administrator\Fields;
 
 use Frozennode\Administrator\Validator;
-use Frozennode\Administrator\Config\ConfigInterface;
 use Illuminate\Database\DatabaseManager as DB;
+use Frozennode\Administrator\Config\ConfigInterface;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 abstract class Field {
 
@@ -190,13 +191,17 @@ abstract class Field {
 	/**
 	 * Filters a query object given
 	 *
-	 * @param \Illuminate\Database\Query\Builder	$query
+	 * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder	$query
 	 * @param array									$selects
 	 *
 	 * @return void
 	 */
-	public function filterQuery(QueryBuilder &$query, &$selects = null)
+	public function filterQuery(&$query, &$selects = null)
 	{
+		if (!$query instanceof EloquentBuilder && !$query instanceof QueryBuilder) {
+			throw new \InvalidArgumentException('You must provide Query\Builder or Eloquent\Builder object');
+		}
+
 		$model = $this->config->getDataModel();
 
 		//if this field has a min/max range, set it

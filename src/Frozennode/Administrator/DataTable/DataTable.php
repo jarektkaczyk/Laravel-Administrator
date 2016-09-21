@@ -6,6 +6,7 @@ use Frozennode\Administrator\DataTable\Columns\Factory as ColumnFactory;
 use Frozennode\Administrator\Fields\Factory as FieldFactory;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class DataTable {
 
@@ -119,21 +120,21 @@ class DataTable {
 		$query = $model->groupBy($table . '.' . $keyName);
 
 		//get the Illuminate\Database\Query\Builder instance and set up the count query
-		$dbQuery = $query->getQuery();
-		$countQuery = $dbQuery->getConnection()->table($table)->groupBy($table . '.' . $keyName);
+		$countQuery = (clone $query);
+		$countQuery->groupBy($table . '.' . $keyName);
 
 		//run the supplied query filter for both queries if it was provided
-		$this->config->runQueryFilter($dbQuery);
+		$this->config->runQueryFilter($query);
 		$this->config->runQueryFilter($countQuery);
 
 		//set up initial array states for the selects
 		$selects = array($table.'.*');
 
 		//set the filters
-		$this->setFilters($filters, $dbQuery, $countQuery, $selects);
+		$this->setFilters($filters, $query, $countQuery, $selects);
 
 		//set the selects
-		$dbQuery->select($selects);
+		$query->select($selects);
 
 		//determines if the sort should have the table prefixed to it
 		$sortOnTable = true;
@@ -188,8 +189,12 @@ class DataTable {
 	 *
 	 * @return array
 	 */
-	public function performCountQuery(QueryBuilder $countQuery, $querySql, $queryBindings, $page)
+	public function performCountQuery($countQuery, $querySql, $queryBindings, $page)
 	{
+		if (!$countQuery instanceof EloquentBuilder && !$countQuery instanceof QueryBuilder) {
+			throw new \InvalidArgumentException('You must provide Query\Builder or Eloquent\Builder object');
+		}
+
 		//grab the model instance
 		$model = $this->config->getDataModel();
 
@@ -197,6 +202,7 @@ class DataTable {
 		$sql = "SELECT COUNT({$model->getKeyName()}) AS aggregate FROM ({$querySql}) AS agg";
 
 		//then perform the count query
+		$countQuery = $countQuery instanceof EloquentBuilder ? $countQuery->getQuery() : $countQuery;
 		$results = $countQuery->getConnection()->select($sql, $queryBindings);
 		$numRows = is_array($results[0]) ? $results[0]['aggregate'] : $results[0]->aggregate;
 		$page = (int) $page;
@@ -214,11 +220,11 @@ class DataTable {
 	 * Sets the query filters when getting the rows
 	 *
 	 * @param mixed									$filters
-	 * @param \Illuminate\Database\Query\Builder	$query
-	 * @param \Illuminate\Database\Query\Builder	$countQuery
+	 * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder	$query
+	 * @param \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder	$countQuery
 	 * @param array									$selects
 	 */
-	public function setFilters($filters, QueryBuilder &$query, QueryBuilder &$countQuery, &$selects)
+	public function setFilters($filters, &$query, &$countQuery, &$selects)
 	{
 		//then we set the filters
 		if ($filters && is_array($filters))

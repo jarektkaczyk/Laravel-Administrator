@@ -193,12 +193,19 @@ class DataTable {
 		//grab the model instance
 		$model = $this->config->getDataModel();
 
-		//then wrap the inner table and perform the count
-		$sql = "SELECT COUNT({$model->getKeyName()}) AS aggregate FROM ({$querySql}) AS agg";
+		if (!$countQuery->joins && (!$countQuery->columns || $countQuery->columns == ['*'])) {
+			$cQuery = clone $countQuery;
+			$cQuery->groups = null;
+			$numRows = $cQuery->count($model->getKeyName());
+		} else {
+			//then wrap the inner table and perform the count
+			$sql = "SELECT COUNT({$model->getKeyName()}) AS aggregate FROM ({$querySql}) AS agg";
 
-		//then perform the count query
-		$results = $countQuery->getConnection()->select($sql, $queryBindings);
-		$numRows = is_array($results[0]) ? $results[0]['aggregate'] : $results[0]->aggregate;
+			//then perform the count query
+			$results = $countQuery->getConnection()->select($sql, $queryBindings);
+			$numRows = is_array($results[0]) ? $results[0]['aggregate'] : $results[0]->aggregate;
+		}
+
 		$page = (int) $page;
 		$last = (int) ceil($numRows / $this->rowsPerPage);
 

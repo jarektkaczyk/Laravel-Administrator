@@ -1,5 +1,6 @@
 <?php namespace Frozennode\Administrator;
 
+use Storage;
 use Illuminate\Http\Exception\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -21,7 +22,7 @@ class AdminController extends Controller {
 	 * @var \Illuminate\Session\SessionManager
 	 */
 	protected $session;
-	
+
 	/**
 	 * @var string
 	 */
@@ -40,7 +41,7 @@ class AdminController extends Controller {
 	{
 		$this->request = $request;
 		$this->session = $session;
-		
+
 		$this->formRequestErrors = $this->resolveDynamicFormRequestErrors($request);
 
 		if ( ! is_null($this->layout))
@@ -125,14 +126,14 @@ class AdminController extends Controller {
 		$config = app('itemconfig');
 		$fieldFactory = app('admin_field_factory');
 		$actionFactory = app('admin_action_factory');
-		
+
 		if (array_key_exists('form_request', $config->getOptions()) && $this->formRequestErrors !== null) {
 			return response()->json(array(
 				'success' => false,
 				'errors'  => $this->formRequestErrors,
 			));
 		}
-		
+
 		$save = $config->save($this->request, $fieldFactory->getEditFields(), $actionFactory->getActionPermissions(), $id);
 
 		if (is_string($save))
@@ -431,7 +432,7 @@ class AdminController extends Controller {
 	{
 		//get the stored path of the original
 		$path = $this->request->input('path');
-		$data = File::get($path);
+		$data = Storage::get($path);
 		$file = new SFile($path);
 
 		$headers = array(

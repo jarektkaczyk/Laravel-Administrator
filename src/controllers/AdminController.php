@@ -433,13 +433,10 @@ class AdminController extends Controller {
 		//get the stored path of the original
 		$path = $this->request->input('path');
 		$data = Storage::get($path);
-		$file = new SFile($path);
 
-		$headers = array(
-			'Content-Type' => $file->getMimeType(),
-			'Content-Length' => $file->getSize(),
-			'Content-Disposition' => 'attachment; filename="' . $file->getFilename() . '"'
-		);
+		$headers = [
+			'Content-Length' => Storage::size($path),
+		];
 
 		return response()->make($data, 200, $headers);
 	}

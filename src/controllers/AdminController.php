@@ -432,6 +432,11 @@ class AdminController extends Controller {
 	{
 		//get the stored path of the original
 		$path = $this->request->input('path');
+
+		if (!Storage::exists($path)) {
+			return;
+		}
+
 		$data = Storage::get($path);
 
 		$headers = [

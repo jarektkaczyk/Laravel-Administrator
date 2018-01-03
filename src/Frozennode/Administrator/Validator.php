@@ -166,7 +166,7 @@ class Validator extends \Illuminate\Validation\Validator {
 	/**
 	 * Validate that an attribute is a string.
 	 */
-	protected function validateString($attribute, $value)
+	public function validateString($attribute, $value)
 	{
 		return is_string($value);
 	}

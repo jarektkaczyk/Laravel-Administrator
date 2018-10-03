@@ -475,7 +475,7 @@ class AdminController extends Controller {
 		{
 			$this->session->forget('administrator_download_response');
             // Fix for L5.6 migration
-            preg_match('/filename=([^\s]+)\s*$/', $response['headers']['content-disposition'], $matches);
+            preg_match('/filename=([^\s]+)\s*$/', $response['headers']['content-disposition'][0], $matches);
             $filename = $matches[1] ??
                 // fallback to the original logic
                 substr($response['headers']['content-disposition'][0], 22, -1);

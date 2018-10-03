@@ -474,7 +474,11 @@ class AdminController extends Controller {
 		if ($response = $this->session->get('administrator_download_response'))
 		{
 			$this->session->forget('administrator_download_response');
-			$filename = substr($response['headers']['content-disposition'][0], 22, -1);
+            // Fix for L5.6 migration
+            preg_match('/filename=([^\s]+)\s*$/', $response['headers']['content-disposition'], $matches);
+            $filename = $matches[1] ??
+                // fallback to the original logic
+                substr($response['headers']['content-disposition'][0], 22, -1);
 
 			return response()->download($response['file'], $filename, $response['headers']);
 		}

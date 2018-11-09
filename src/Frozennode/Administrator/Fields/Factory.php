@@ -75,28 +75,28 @@ class Factory {
 	 *
 	 * @var array
 	 */
-	protected $filters = array();
+	protected $filters = [];
 
 	/**
 	 * The compiled filters arrays
 	 *
 	 * @var array
 	 */
-	protected $filtersArrays = array();
+	protected $filtersArrays = [];
 
 	/**
 	 * The compiled edit fields array
 	 *
 	 * @var array
 	 */
-	protected $editFields;
+	protected $editFields = [];
 
 	/**
 	 * The edit field objects as arrays
 	 *
 	 * @var array
 	 */
-	protected $editFieldsArrays;
+	protected $editFieldsArrays = [];
 
 	/**
 	 * The edit field data model

@@ -62,7 +62,7 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase {
 	public function testBuild()
 	{
 		$relatedModel = m::mock(array('getTable' => 'table', 'getKeyName' => 'id'));
-		$relationship = m::mock(array('getRelated' => $relatedModel, 'getForeignKey' => 'some_id'));
+		$relationship = m::mock(array('getRelated' => $relatedModel, 'getForeignKeyName' => 'some_id'));
 		$model = m::mock(array('getTable' => 'table', 'field' => $relationship));
 		$this->config->shouldReceive('getDataModel')->twice()->andReturn($model);
 		$this->validator->shouldReceive('arrayGet')->times(6);

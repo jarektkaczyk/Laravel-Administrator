@@ -140,7 +140,7 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase {
 	public function testGetIncludedColumn()
 	{
 		$this->config->shouldReceive('getDataModel')->once()->andReturn(m::mock(array('getTable' => 'table')));
-		$nested = array('pieces' => array('foo'), 'models' => array(m::mock(array('foo' => m::mock(array('getForeignKey' => 'fk'))))));
+		$nested = array('pieces' => array('foo'), 'models' => array(m::mock(array('foo' => m::mock(array('getForeignKeyName' => 'fk'))))));
 		$this->column->shouldReceive('getOption')->once()->andReturn($nested);
 		$this->assertEquals($this->column->getIncludedColumn(), array('fk' => 'table.fk'));
 	}

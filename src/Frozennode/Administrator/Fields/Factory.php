@@ -390,6 +390,9 @@ class Factory {
 			//iterate over each supplied edit field
 			foreach ($this->config->getOption('edit_fields') as $name => $options)
 			{
+                if (array_key_exists('value', $options) && is_callable($options['value'])) {
+                    $options['value'] = call_user_func($options['value']);
+                }
 				$fieldObject = $this->make($name, $options, $loadRelationships);
 				$this->editFields[$fieldObject->getOption('field_name')] = $fieldObject;
 			}

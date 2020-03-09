@@ -14,12 +14,6 @@
 	</li>
 @else
 	<li class="item">
-		@if (strpos($key, $settingsPrefix) === 0)
-			<a href="{{route('admin_settings', array(substr($key, strlen($settingsPrefix))))}}">{{$item}}</a>
-		@elseif (strpos($key, $pagePrefix) === 0)
-			<a href="{{route('admin_page', array(substr($key, strlen($pagePrefix))))}}">{{$item}}</a>
-		@else
-			<a href="{{route('admin_index', array($key))}}">{{$item}}</a>
-		@endif
+		<a href="{{$key}}">{{$item}}</a>
 	</li>
 @endif

@@ -51,6 +51,9 @@ class Menu {
 		//iterate over the menu to build the return array of valid menu items
 		foreach ($subMenu as $key => $item)
 		{
+            if (is_callable($item)) {
+                $item = call_user_func($item);
+            }
 			//if the item is a string, find its config
 			if (is_string($item))
 			{
@@ -60,12 +63,17 @@ class Menu {
 				//if a config object was returned and if the permission passes, add the item to the menu
 				if (is_a($config, 'Frozennode\Administrator\Config\Config') && $config->getOption('permission'))
 				{
-					$menu[$item] = $config->getOption('title');
+                    $this->add($menu, $item, $config->getOption('title'));
 				}
 				//otherwise if this is a custom page, add it to the menu
 				else if ($config === true)
 				{
-					$menu[$item] = $key;
+                    $this->add($menu, $item, $key);
+				}
+				//or if the variable $item is a valid URL
+				else if (filter_var($item, FILTER_VALIDATE_URL))
+				{
+                    $this->add($menu, $item, $key);
 				}
 			}
 			//if the item is an array, recursively run this method on it
@@ -83,4 +91,25 @@ class Menu {
 
 		return $menu;
 	}
+
+    /**
+     * @param array $menu
+     * @param string $item
+     * @param $key
+     */
+    protected function add(array &$menu, string $item, $key): void
+    {
+        $settingsPrefix = $this->configFactory->getSettingsPrefix();
+        $pagePrefix = $this->configFactory->getPagePrefix();
+        if (strpos($item, $settingsPrefix) === 0) {
+            $url = route('admin_settings', array(substr($item, strlen($settingsPrefix))));
+        } elseif (strpos($item, $pagePrefix) === 0) {
+            $url = route('admin_page', array(substr($item, strlen($pagePrefix))));
+        } elseif (filter_var($item, FILTER_VALIDATE_URL)) {
+            $url = $item;
+        } else {
+            $url = route('admin_index', array($item));
+        }
+        $menu[$url] = $key;
+    }
 }

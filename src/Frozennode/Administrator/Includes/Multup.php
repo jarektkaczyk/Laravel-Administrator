@@ -74,7 +74,7 @@ class Multup {
 
 	/**
 	 * Instantiates the Multup
-	 * @param mixed $file The file array provided by Laravel's Request::input('field_name') or a path to a file
+	 * @param mixed $file The file array provided by Laravel's request('field_name') or a path to a file
 	 */
 	public function __construct($input, $rules, $path, $random)
 	{
@@ -121,7 +121,7 @@ class Multup {
 	public function upload()
 	{
 
-		$this->image = array($this->input => Request::input($this->input));
+		$this->image = array($this->input => request($this->input));
 		$result = array();
 
 		$result[] = $this->post_upload_process($this->upload_image());

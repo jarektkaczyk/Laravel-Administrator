@@ -121,10 +121,15 @@ class Validator extends \Illuminate\Validation\Validator {
 		return is_dir($value);
 	}
 
-	/**
-	 * Validates that an item is an array
-	 */
-	public function validateArray($attribute, $value)
+    /**
+     * Validate that an attribute is an array.
+     *
+     * @param  string  $attribute
+     * @param  mixed  $value
+     * @param  array  $parameters
+     * @return bool
+     */
+	public function validateArray($attribute, $value, $parameters = [])
 	{
 		return is_array($value);
 	}

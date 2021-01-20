@@ -14,7 +14,7 @@ class ColumnStub {
 	public $foo = 'bar';
 }
 
-class ColumnFactoryTest extends \PHPUnit_Framework_TestCase {
+class ColumnFactoryTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -55,7 +55,7 @@ class ColumnFactoryTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -66,7 +66,7 @@ class ColumnFactoryTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
@@ -142,11 +142,9 @@ class ColumnFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->factory->parseOptions('funky', array('title' => 'Funky')), array('column_name' => 'funky', 'title' => 'Funky'));
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testParseOptionsInvalidValueThrowsError()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->config->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->parseOptions(0, null);
 	}

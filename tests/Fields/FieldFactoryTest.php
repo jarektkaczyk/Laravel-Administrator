@@ -20,7 +20,7 @@ class EloquentStub {
 
 class FieldStub {}
 
-class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
+class FieldFactoryTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -53,7 +53,7 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -64,7 +64,7 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
@@ -107,22 +107,18 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->factory->validateOptions($name, $options), array('field_name' => $name));
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidateOptionsIntegerNameArrayOptions()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$name = 0;
 		$options = array();
 		$this->config->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->validateOptions($name, $options);
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidateOptionsStringNameNonStringOptions()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$name = 'field';
 		$options = true;
 		$this->config->shouldReceive('getOption')->once()->andReturn('');
@@ -188,42 +184,34 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($options, array('type' => 'text'));
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testCheckTypeExistsInvalidType()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$options = array('type' => 'foo');
 		$this->config->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->checkTypeExists($options);
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testCheckTypeExistsInvalidSettingsType()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$options = array('type' => 'belongs_to_many');
 		$this->config->shouldReceive('getType')->once()->andReturn('settings')
 					->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->checkTypeExists($options);
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testGetRelationshipKeyErrorOnMissingMethod()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->config->shouldReceive('getDataModel')->once()->andReturn(new EloquentStub)
 					->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->getRelationshipKey('foo');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testGetRelationshipKeyErrorOnMissingMethodObject()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->config->shouldReceive('getDataModel')->once()->andReturn(new EloquentStub)
 					->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->getRelationshipKey('bar');
@@ -236,11 +224,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->factory->getRelationshipKey('btm'), 'belongs_to_many');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testFindFieldMissingField()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->factory->shouldReceive('getEditFields')->once()->andReturn(array());
 		$this->config->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->findField('foo');
@@ -252,11 +238,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->factory->findField('foo'), 'bar');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testFindFilterMissingField()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->factory->shouldReceive('getFilters')->once()->andReturn(array());
 		$this->config->shouldReceive('getOption')->once()->andReturn('');
 		$this->factory->findFilter('foo');
@@ -426,6 +410,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->factory->updateRelationshipOptions('field', 'filter', array(), array(), 'search'), array('foo' => 'bar'));
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterBySearchTermNoTerm()
 	{
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');
@@ -434,6 +421,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->factory->filterBySearchTerm(null, $query, $field, array(), '');
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterBySearchTermSelectedItems()
 	{
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');
@@ -445,6 +435,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->factory->filterBySearchTerm('foo', $query, $field, array(1), '');
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterBySearchTermNoSelectedItems()
 	{
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');
@@ -470,6 +463,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->factory->formatSelectedItems(false), array());
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryBySelectedItems()
 	{
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');
@@ -480,6 +476,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->factory->filterQueryBySelectedItems($query, array(), $field, '');
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testApplyConstraints()
 	{
 		$relatedModel = m::mock(array('getRelated' => null));
@@ -496,6 +495,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->factory->applyConstraints(array('key' => array(1, 2)), $query, $field);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testApplyConstraintsEmpty()
 	{
 		$field = m::mock('Frozennode\Administrator\Fields\Field');
@@ -504,6 +506,9 @@ class FieldFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->factory->applyConstraints(array(), $query, $field);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testApplyConstraintsInvalidConstraintSupplied()
 	{
 		$field = m::mock('Frozennode\Administrator\Fields\Field');

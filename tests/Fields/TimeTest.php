@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\Fields;
 
 use Mockery as m;
 
-class TimeTest extends \PHPUnit_Framework_TestCase {
+class TimeTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -36,7 +36,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -48,11 +48,14 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithMinAndMax()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -64,6 +67,9 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryOnlyMin()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -75,6 +81,9 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryOnlyMax()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -86,6 +95,9 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryNoMinOrMax()
 	{
 		$model = m::mock(array('getTable' => 'table'));

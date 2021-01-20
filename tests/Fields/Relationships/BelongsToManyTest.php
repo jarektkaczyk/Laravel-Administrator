@@ -20,7 +20,7 @@ class BelongsToManyEloquentStub {
 	public function __unset($rel) {unset($this->{$rel});}
 }
 
-class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
+class BelongsToManyTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -53,7 +53,7 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -66,16 +66,19 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$relatedModel = m::mock(array('getKeyName' => 'id', 'getTable' => 'other_table'));
 		$relationship = m::mock(array('getRelated' => $relatedModel, 'getForeignKeyName' => 'some_id', 'getQualifiedRelatedPivotKeyName' => 'some_other_id',
-										'getTable' => 'table'));
+										'getTable' => 'table', 'getQualifiedForeignPivotKeyName' => 'qualified_foreign_pivot_key_name'));
 		$model = m::mock(array('field' => $relationship, 'getTable' => 'table'));
 		$this->config->shouldReceive('getDataModel')->twice()->andReturn($model);
 		$this->validator->shouldReceive('arrayGet')->times(6);
@@ -100,15 +103,18 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(!isset($model->rel));
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithValueNotJoined()
 	{
 		$connection = m::mock('Illuminate\Database\Connection');
-		$connection->shouldReceive('getTablePrefix')->once()->andReturn('');
+		$connection->shouldReceive('getTablePrefix')->once()->never();
 		$query = m::mock('Illuminate\Database\Query\Builder');
 		$query->shouldReceive('whereIn')->once()
 				->shouldReceive('join')->once()
-				->shouldReceive('havingRaw')->once()
-				->shouldReceive('getConnection')->once()->andReturn($connection);
+				->shouldReceive('havingRaw')->never()
+				->shouldReceive('getConnection')->never();
 		$this->validator->shouldReceive('isJoined')->once()->andReturn(false);
 		$model = m::mock(array('getTable' => 'table', 'getKeyName' => 'id'));
 		$this->config->shouldReceive('getDataModel')->twice()->andReturn($model);
@@ -117,15 +123,18 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query, $selects);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithValueAlreadyJoined()
 	{
 		$connection = m::mock('Illuminate\Database\Connection');
-		$connection->shouldReceive('getTablePrefix')->once()->andReturn('');
+		$connection->shouldReceive('getTablePrefix')->once()->never();
 		$query = m::mock('Illuminate\Database\Query\Builder');
 		$query->shouldReceive('whereIn')->once()
 				->shouldReceive('join')->never()
-				->shouldReceive('havingRaw')->once()
-				->shouldReceive('getConnection')->once()->andReturn($connection);
+				->shouldReceive('havingRaw')->never()
+				->shouldReceive('getConnection')->never();
 		$this->validator->shouldReceive('isJoined')->once()->andReturn(true);
 		$model = m::mock(array('getTable' => 'table', 'getKeyName' => 'id'));
 		$this->config->shouldReceive('getDataModel')->twice()->andReturn($model);
@@ -134,6 +143,9 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query, $selects);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithoutValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');
@@ -147,6 +159,9 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query, $selects);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testConstrainQueryNotJoined()
 	{
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');
@@ -158,6 +173,9 @@ class BelongsToManyTest extends \PHPUnit_Framework_TestCase {
 		$this->field->constrainQuery($query, $model, 'foo');
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testConstrainQueryAlreadyJoined()
 	{
 		$query = m::mock('Illuminate\Database\Eloquent\Builder');

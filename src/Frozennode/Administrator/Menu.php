@@ -102,13 +102,13 @@ class Menu {
         $settingsPrefix = $this->configFactory->getSettingsPrefix();
         $pagePrefix = $this->configFactory->getPagePrefix();
         if (strpos($item, $settingsPrefix) === 0) {
-            $url = route('admin_settings', array(substr($item, strlen($settingsPrefix))));
+            $url = \Illuminate\Support\Facades\URL::route('admin_settings', array(substr($item, strlen($settingsPrefix))));
         } elseif (strpos($item, $pagePrefix) === 0) {
-            $url = route('admin_page', array(substr($item, strlen($pagePrefix))));
+            $url = \Illuminate\Support\Facades\URL::route('admin_page', array(substr($item, strlen($pagePrefix))));
         } elseif (filter_var($item, FILTER_VALIDATE_URL)) {
             $url = $item;
         } else {
-            $url = route('admin_index', array($item));
+            $url = \Illuminate\Support\Facades\URL::route('admin_index', array($item));
         }
         $menu[$url] = $key;
     }

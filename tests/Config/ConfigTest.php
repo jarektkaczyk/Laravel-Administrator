@@ -4,7 +4,7 @@ namespace Frozennode\Administrator\Tests\Config;
 use Mockery as m;
 use Frozennode\Administrator\Config\Config;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase {
+class ConfigTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -30,7 +30,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Config', array($this->validator, $this->validator, array('name' => 'model_name')))->makePartial();
@@ -39,11 +39,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testValidates()
 	{
 		$this->validator->shouldReceive('override')->once()
@@ -51,17 +54,18 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
 		$this->config->validateOptions();
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidateFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->validator->shouldReceive('override')->once()
 						->shouldReceive('fails')->once()->andReturn(true)
 						->shouldReceive('messages')->once()->andReturn(m::mock(array('all' => array())));
 		$this->config->validateOptions();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$this->config->build();
@@ -80,11 +84,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->config->getOption('name'), 'model_name');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testGetOptionThrowsException()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->config->shouldReceive('getOptions')->once()->andReturn(array('name' => 'model_name'));
 		$this->config->getOption('foo');
 	}

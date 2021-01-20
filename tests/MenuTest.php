@@ -1,9 +1,10 @@
 <?php
 namespace Frozennode\Administrator\Tests;
 
+use Illuminate\Support\Facades\URL;
 use Mockery as m;
 
-class MenuTest extends \PHPUnit_Framework_TestCase {
+class MenuTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Config Repository mock
@@ -29,7 +30,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->config = m::mock('Illuminate\Config\Repository');
 		$this->configFactory = m::mock('Frozennode\Administrator\Config\Factory');
@@ -39,7 +40,7 @@ class MenuTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
@@ -49,7 +50,10 @@ class MenuTest extends \PHPUnit_Framework_TestCase {
 		$this->config->shouldReceive('get')->once()->andReturn(array('test_name'));
 		$itemconfig = m::mock('Frozennode\Administrator\Config\Config');
 		$itemconfig->shouldReceive('getOption')->twice()->andReturn(true, 'test_title');
-		$this->configFactory->shouldReceive('make')->once()->andReturn($itemconfig);
+		$this->configFactory->shouldReceive('make')->once()->andReturn($itemconfig)
+            ->shouldReceive('getSettingsPrefix')->once()->andReturn('settings.')
+            ->shouldReceive('getPagePrefix')->once()->andReturn('page.');
+        URL::shouldReceive('route')->with('admin_index', array('test_name'))->andReturn('test_name');
 		$this->assertEquals($this->menu->getMenu(), array('test_name' => 'test_title'));
 	}
 
@@ -67,7 +71,9 @@ class MenuTest extends \PHPUnit_Framework_TestCase {
 		$this->config->shouldReceive('get')->once()->andReturn(array('Header' => array('test_name')));
 		$itemconfig = m::mock('Frozennode\Administrator\Config\Config');
 		$itemconfig->shouldReceive('getOption')->twice()->andReturn(true, 'test_title');
-		$this->configFactory->shouldReceive('make')->once()->andReturn($itemconfig);
+		$this->configFactory->shouldReceive('make')->once()->andReturn($itemconfig)
+            ->shouldReceive('getSettingsPrefix')->once()->andReturn('settings.')
+            ->shouldReceive('getPagePrefix')->once()->andReturn('page.');
 		$this->assertEquals($this->menu->getMenu(), array('Header' => array('test_name' => 'test_title')));
 	}
 
@@ -85,7 +91,9 @@ class MenuTest extends \PHPUnit_Framework_TestCase {
 		$this->config->shouldReceive('get')->once()->andReturn(array('Header' => array('Header2' => array('test_name'))));
 		$itemconfig = m::mock('Frozennode\Administrator\Config\Config');
 		$itemconfig->shouldReceive('getOption')->twice()->andReturn(true, 'test_title');
-		$this->configFactory->shouldReceive('make')->once()->andReturn($itemconfig);
+		$this->configFactory->shouldReceive('make')->once()->andReturn($itemconfig)
+            ->shouldReceive('getSettingsPrefix')->once()->andReturn('settings.')
+            ->shouldReceive('getPagePrefix')->once()->andReturn('page.');
 		$this->assertEquals($this->menu->getMenu(), array('Header' => array('Header2' => array('test_name' => 'test_title'))));
 	}
 

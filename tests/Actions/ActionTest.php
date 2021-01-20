@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\DataTable\Columns;
 
 use Mockery as m;
 
-class ActionTest extends \PHPUnit_Framework_TestCase {
+class ActionTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -29,7 +29,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -41,11 +41,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testValidates()
 	{
 		$this->validator->shouldReceive('override')->once()
@@ -53,11 +56,9 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 		$this->action->validateOptions();
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidateFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->validator->shouldReceive('override')->once()
 						->shouldReceive('fails')->once()->andReturn(true)
 						->shouldReceive('messages')->once()->andReturn(m::mock(array('all' => array())));
@@ -65,6 +66,9 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 		$this->action->validateOptions();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$this->action->shouldReceive('buildStringOrCallable')->twice();
@@ -72,6 +76,9 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 		$this->action->build();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuildStringOrCallableEmpty()
 	{
 		$this->config->shouldReceive('getDataModel')->once();
@@ -129,11 +136,9 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->action->getOption('foo'), 'bar');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testGetOptionFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->action->shouldReceive('getOptions')->once()->andReturn(array('action_name' => 'bar'));
 		$this->action->getOption('foo');
 	}

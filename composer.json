@@ -14,8 +14,8 @@
 		"issues": "https://github.com/FrozenNode/Laravel-Administrator/issues"
 	},
 	"require": {
-		"php": ">=5.4.0",
-		"laravel/framework": "^6.0|^7.0",
+		"php": "^7.4|^8.0",
+		"laravel/framework": "^6.0|^7.0|^8.0",
 		"ckeditor/ckeditor": "4.*"
 	},
 	"require-dev": {

@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\Fields;
 
 use Mockery as m;
 
-class TextTest extends \PHPUnit_Framework_TestCase {
+class TextTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -36,7 +36,7 @@ class TextTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -48,11 +48,14 @@ class TextTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');
@@ -62,6 +65,9 @@ class TextTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithoutValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');

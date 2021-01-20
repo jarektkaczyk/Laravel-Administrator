@@ -4,7 +4,7 @@ namespace Frozennode\Administrator\Tests\Config;
 use Mockery as m;
 use Frozennode\Administrator\Config\Factory;
 
-class ConfigFactoryTest extends \PHPUnit_Framework_TestCase {
+class ConfigFactoryTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -25,7 +25,7 @@ class ConfigFactoryTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->validator->shouldReceive('override')->once()
@@ -35,24 +35,23 @@ class ConfigFactoryTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
 	/**
 	 * Tests that the validation is run
+	 * @doesNotPerformAssertions
 	 */
 	public function testValidationRun()
 	{
 		$factory = new Factory($this->validator, $this->validator, array());
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidationErrorThrowsException()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->validator->shouldReceive('fails')->once()->andReturn(true)
 						->shouldReceive('messages')->once()->andReturn(m::mock(array('all' => array())));
 
@@ -76,6 +75,9 @@ class ConfigFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($factory->make('some_model'), false);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testUpdateConfigOptions()
 	{
 		$config = m::mock('Frozennode\Administrator\Config\Config');

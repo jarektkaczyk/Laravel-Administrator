@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\DataTable\Columns;
 
 use Mockery as m;
 
-class ColumnTest extends \PHPUnit_Framework_TestCase {
+class ColumnTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -36,7 +36,7 @@ class ColumnTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -50,11 +50,14 @@ class ColumnTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testValidates()
 	{
 		$this->column->shouldReceive('getRules')->once()->andReturn(array());
@@ -63,11 +66,9 @@ class ColumnTest extends \PHPUnit_Framework_TestCase {
 		$this->column->validateOptions();
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidateFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->column->shouldReceive('getRules')->once()->andReturn(array());
 		$this->validator->shouldReceive('override')->once()
 						->shouldReceive('fails')->once()->andReturn(true)
@@ -76,6 +77,9 @@ class ColumnTest extends \PHPUnit_Framework_TestCase {
 		$this->column->validateOptions();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$this->config->shouldReceive('getDataModel')->once()->andReturn(m::mock(array()));
@@ -120,11 +124,9 @@ class ColumnTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->column->getOption('foo'), 'bar');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testGetOptionFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->column->shouldReceive('getOptions')->once()->andReturn(array('column_name' => 'bar'));
 		$this->column->getOption('foo');
 	}

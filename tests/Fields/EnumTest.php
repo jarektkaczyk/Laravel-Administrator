@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\Fields;
 
 use Mockery as m;
 
-class EnumTest extends \PHPUnit_Framework_TestCase {
+class EnumTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -36,7 +36,7 @@ class EnumTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -48,7 +48,7 @@ class EnumTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
@@ -61,6 +61,9 @@ class EnumTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($model->field, 1);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testSetFilter()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(3);
@@ -69,6 +72,9 @@ class EnumTest extends \PHPUnit_Framework_TestCase {
 		$this->field->setFilter(null);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithValue()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -79,6 +85,9 @@ class EnumTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithoutValue()
 	{
 		$model = m::mock(array('getTable' => 'table'));

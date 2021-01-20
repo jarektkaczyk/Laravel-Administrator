@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\DataTable\Columns;
 
 use Mockery as m;
 
-class DataTableTest extends \PHPUnit_Framework_TestCase {
+class DataTableTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Config mock
@@ -36,7 +36,7 @@ class DataTableTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
 		$this->columnFactory = m::mock('Frozennode\Administrator\DataTable\Columns\Factory');
@@ -48,7 +48,7 @@ class DataTableTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
@@ -119,10 +119,8 @@ class DataTableTest extends \PHPUnit_Framework_TestCase {
 
 	public function testPerformCountQuery()
 	{
-		$result = new \stdClass;
-		$result->aggregate = 100;
 		$countQuery = m::mock('Illuminate\Database\Query\Builder');
-		$countQuery->shouldReceive('getConnection')->once()->andReturn(m::mock(array('select' => array($result))));
+        $countQuery->shouldReceive('count')->once()->andReturn(100);
 		$model = m::mock('Illuminate\Database\Eloquent\Model');
 		$model->shouldReceive('getKeyName')->once()->andReturn('id');
 		$this->config->shouldReceive('getDataModel')->once()->andReturn($model);
@@ -130,6 +128,9 @@ class DataTableTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->dataTable->performCountQuery($countQuery, 'foo', array(), 1), $output);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testSetFilters()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');

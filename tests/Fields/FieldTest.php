@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\Fields;
 
 use Mockery as m;
 
-class FieldTest extends \PHPUnit_Framework_TestCase {
+class FieldTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -36,7 +36,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -48,17 +48,23 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(3);
 		$this->field->build();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuildRunsVisibleCheck()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(3)->andReturn(null, function($param) {}, null);
@@ -66,6 +72,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->build();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuildRunsEditableCheck()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(3)->andReturn(null, null, function($param) {});
@@ -73,6 +82,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->build();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testValidates()
 	{
 		$this->field->shouldReceive('getRules')->once()->andReturn(array());
@@ -81,11 +93,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->validateOptions();
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testValidateFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->field->shouldReceive('getRules')->once()->andReturn(array());
 		$this->validator->shouldReceive('override')->once()
 						->shouldReceive('fails')->once()->andReturn(true)
@@ -110,6 +120,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($model->field, 'test');
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testSetFilter()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(3);
@@ -118,6 +131,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->setFilter(null);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithMinAndMax()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -128,6 +144,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryOnlyMin()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -138,6 +157,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryOnlyMax()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -148,6 +170,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryNoMinOrMax()
 	{
 		$model = m::mock(array('getTable' => 'table'));
@@ -183,11 +208,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($this->field->getOption('foo'), 'bar');
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
 	public function testGetOptionFails()
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		$this->field->shouldReceive('getOptions')->once()->andReturn(array('field_name' => 'bar'));
 		$this->field->getOption('foo');
 	}

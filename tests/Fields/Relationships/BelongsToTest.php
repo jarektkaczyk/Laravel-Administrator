@@ -8,7 +8,7 @@ class BelongsToEloquentStub {
 	public function __unset($rel) {unset($this->{$rel});}
 }
 
-class BelongsToTest extends \PHPUnit_Framework_TestCase {
+class BelongsToTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -41,7 +41,7 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -54,11 +54,14 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$relatedModel = m::mock(array('getTable' => 'table', 'getKeyName' => 'id'));
@@ -91,6 +94,9 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(!isset($model->rel));
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');
@@ -100,6 +106,9 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithoutValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');

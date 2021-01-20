@@ -3,7 +3,7 @@ namespace Frozennode\Administrator\Tests\Fields;
 
 use Mockery as m;
 
-class BoolTest extends \PHPUnit_Framework_TestCase {
+class BoolTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The Validator mock
@@ -36,7 +36,7 @@ class BoolTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Set up function
 	 */
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->validator = m::mock('Frozennode\Administrator\Validator');
 		$this->config = m::mock('Frozennode\Administrator\Config\Model\Config');
@@ -48,11 +48,14 @@ class BoolTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * Tear down function
 	 */
-	public function tearDown()
+	public function tearDown(): void
 	{
 		m::close();
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testBuild()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(4);
@@ -75,6 +78,9 @@ class BoolTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($model->field, 0);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testSetFilter()
 	{
 		$this->validator->shouldReceive('arrayGet')->times(4);
@@ -83,6 +89,9 @@ class BoolTest extends \PHPUnit_Framework_TestCase {
 		$this->field->setFilter(null);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryWithValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');
@@ -92,6 +101,9 @@ class BoolTest extends \PHPUnit_Framework_TestCase {
 		$this->field->filterQuery($query);
 	}
 
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testFilterQueryNoValue()
 	{
 		$query = m::mock('Illuminate\Database\Query\Builder');
